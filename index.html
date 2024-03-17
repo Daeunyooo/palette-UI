@@ -1,0 +1,126 @@
+index.html
+
+######################################################
+#                      Canvas                        #
+######################################################
+
+from IPython.display import HTML
+
+html_code = """
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prototype</title>
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.1.0/dist/tailwind.min.css" rel="stylesheet">
+<style>
+  .grid-cell {
+    width: 100px;
+    height: 100px;
+  }
+  canvas {
+    background-color: #f3f4f6; /* Tailwind light gray */
+    border: 2px dashed #ccc;
+    cursor: crosshair;
+  }
+  .button {
+    background-color: #e5e7eb; /* Tailwind light gray */
+    color: #1f2937; /* Tailwind dark gray */
+    padding: 8px 16px;
+    border-radius: 4px;
+    text-align: center;
+    cursor: pointer;
+  }
+  .button:hover {
+    background-color: #d1d5db; /* Tailwind hover gray */
+  }
+  .color-brushes {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 10px;
+  }
+  .brush {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+  }
+  .brush.red { background-color: #f87171; }
+  .brush.blue { background-color: #60a5fa; }
+  .brush.green { background-color: #4ade80; }
+  .brush.yellow { background-color: #fde047; }
+  .brush.black { background-color: #000000; }
+  .slider-container {
+    margin-top: 20px;
+  }
+</style>
+</head>
+<body class="bg-white text-gray-800">
+<div class="container mx-auto px-4">
+  <div class="flex flex-wrap -mx-2">
+    <div class="w-full lg:w-1/2 px-2 mb-4">
+      <div class="border p-4">
+        <h2 class="text-xl font-semibold mb-4">Mind Palette</h2>
+        <canvas id="drawingCanvas" width="450" height="400"></canvas>
+        <div class="color-brushes">
+          <div class="brush red" onclick="changeColor('#f87171')"></div>
+          <div class="brush blue" onclick="changeColor('#60a5fa')"></div>
+          <div class="brush green" onclick="changeColor('#4ade80')"></div>
+          <div class="brush yellow" onclick="changeColor('#fde047')"></div>
+          <div class="brush black" onclick="changeColor('#000000')"></div>
+        </div>
+        <div class="slider-container">
+          <label for="brushSize">Brush Size: </label>
+          <input type="range" id="brushSize" min="1" max="50" value="5">
+        </div>
+      </div>
+    </div>
+    <!-- Other UI elements remain unchanged -->
+  </div>
+</div>
+<script>
+  const canvas = document.getElementById('drawingCanvas');
+  const ctx = canvas.getContext('2d');
+  let painting = false;
+  let brushColor = '#000000'; // Default color
+  let brushSize = 5; // Default size
+
+  const brushSizeSlider = document.getElementById('brushSize');
+  brushSizeSlider.addEventListener('input', () => {
+    brushSize = brushSizeSlider.value;
+  });
+
+  canvas.addEventListener('mousedown', (e) => {
+    painting = true;
+    draw(e);
+  });
+
+  canvas.addEventListener('mouseup', () => {
+    painting = false;
+    ctx.beginPath();
+  });
+
+  canvas.addEventListener('mousemove', draw);
+
+  function draw(e) {
+    if (!painting) return;
+    ctx.lineWidth = brushSize;
+    ctx.lineCap = 'round';
+    ctx.strokeStyle = brushColor;
+
+    ctx.lineTo(e.clientX - canvas.offsetLeft, e.clientY - canvas.offsetTop);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(e.clientX - canvas.offsetLeft, e.clientY - canvas.offsetTop);
+  }
+
+  function changeColor(color) {
+    brushColor = color;
+  }
+</script>
+</body>
+</html>
+"""
+
+HTML(html_code)
